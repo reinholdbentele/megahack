@@ -6,12 +6,12 @@
   - Switch of a very old Logitech mouse
  
 ## Pinout
-	- MAX7219 CS: PB2
-	- MAX7219 DIN: PB3
-	- MAX7219 CLK: PB5
-	- Green LED: PB0
-	- Yellow LED: PD7
-	- Red LED: PD6
+  - MAX7219 CS: PB2
+  - MAX7219 DIN: PB3
+  - MAX7219 CLK: PB5
+  - Green LED: PB0
+  - Yellow LED: PD7
+  - Red LED: PD6
 
 ## Software
   - [AVR Crosspack for macOS](https://www.obdev.at/products/crosspack/download.html)
