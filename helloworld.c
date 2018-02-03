@@ -20,9 +20,14 @@ static uint8_t display_data[8][8];
 
 uint8_t spi_send_byte(uint8_t data)
 {
+	/* Push data to SPI unit */
     SPDR = data;
+
+	/* Wait for SPI to set finished flag */
     while ((SPSR & _BV(SPIF)) == 0)
         ;
+
+	/* Read from SPDR to clear SPIF from SPSR */
     return SPDR;
 }
 
@@ -93,10 +98,19 @@ int main(void)
 
     SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR1);
 
+	/* No 7-segment decoding active */
     same_cmd_to_all(CMD_DECODE_MODE, 0);
+
+	/* Intensity level from 0..15 */
     same_cmd_to_all(CMD_INTENSITY, 10);
+
+	/* Enable all eight rows */
     same_cmd_to_all(CMD_SCAN_LIMIT, 7);
+
+	/* Normal operation */
     same_cmd_to_all(CMD_SHUTDOWN, 1);
+
+	/* No display test. */
     same_cmd_to_all(CMD_DISPLAY_TEST, 0);
 
     while (true)
