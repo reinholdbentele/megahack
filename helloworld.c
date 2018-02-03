@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -101,16 +102,16 @@ int main(void)
     while (true)
     {
         PORTB |= _BV(LED_GREEN_PIN);
-        PORTD |= _BV(LED_YELLOW_PIN) | _BV_PIN(LED_RED_PIN);
-        clear_display_PIN();
+        PORTD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
+        clear_display();
         set_pixel(0, 0);
         set_pixel(31, 0);
         update_display();
         _delay_ms(500);
 
         PORTB &= ~_BV(LED_GREEN_PIN);
-        PORTD &= ~(_BV(LED_YELLOW_PIN) | _B_PINV(LED_RED_PIN));
-        clear_display_PIN();
+        PORTD &= ~(_BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN));
+        clear_display();
         set_pixel(0, 15);
         set_pixel(31, 15);
         update_display();
