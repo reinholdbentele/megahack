@@ -8,6 +8,7 @@ static uint8_t active_column = 0;
 static uint16_t active_paddle = 0x00ff;
 static bool direction = true;
 static uint8_t speed_counter = 0;
+static uint8_t current_speed = 5;
 
 static void move_paddle(void)
 {
@@ -38,21 +39,15 @@ static void move_paddle(void)
 /* Periodic callback, 30 Hz */
 void game_tick(void)
 {
-    static bool temp = false;
-    if (!temp)
-    {
-        temp = true;
-        move_paddle();
-    }
     speed_counter++;
-    if (speed_counter < 10)
+    if (speed_counter < current_speed)
     {
         return;
     }
     else
     {
         PORTD ^= _BV(LED_YELLOW_PIN);
-        //move_paddle();
+        move_paddle();
         display_set_column(active_column, active_paddle);
         update_display();
         speed_counter = 0;
