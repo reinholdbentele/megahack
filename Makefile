@@ -9,7 +9,7 @@ all: megahack
 clean:
 	rm -f megahack $(OBJS)
 
-program:
+program: megahack.bin
 	avrdude -cusbasp -pm168 -B2 -U flash:w:megahack.bin:r
 
 megahack: $(OBJS)
