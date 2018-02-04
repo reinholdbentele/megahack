@@ -4,7 +4,7 @@
 #include "game.h"
 #include "megahack.h"
 
-static const uint8_t initial_speed = 35;
+#define INITIAL_SPEED		 	35
 
 static uint8_t active_column = 0;
 static uint16_t active_paddle = 0x00ff;
@@ -12,7 +12,7 @@ static uint16_t previous_paddle = 0xffff;
 static bool direction = true;
 static bool game_over = false;
 static uint8_t speed_counter = 0;
-static uint8_t current_speed = initial_speed;
+static uint8_t current_speed = INITIAL_SPEED;
 
 static void new_game(void)
 {
@@ -21,7 +21,7 @@ static void new_game(void)
     previous_paddle = 0xffff;
     direction = true;
     game_over = false;
-    current_speed = initial_speed;
+    current_speed = INITIAL_SPEED;
     clear_display();
 }
 
@@ -90,7 +90,7 @@ void game_button_pressed(void)
     display_set_column(active_column, active_paddle);
     active_column++;
 
-    current_speed = initial_speed - active_column;
+    current_speed = INITIAL_SPEED - active_column;
 
     if ((active_paddle == 0) || (active_column == 32))
     {
