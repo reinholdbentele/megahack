@@ -16,19 +16,20 @@
 #define SCK_PIN PB5
 #define MOSI_PIN PB3
 #define SWITCH_PIN PB1
+#define switch_pressed() ((PINB & _BV(SWITCH_PIN)) == 0)
 
 static uint8_t display_data[8][8];
 
 uint8_t spi_send_byte(uint8_t data)
 {
-	/* Push data to SPI unit */
+    /* Push data to SPI unit */
     SPDR = data;
 
-	/* Wait for SPI to set finished flag */
+    /* Wait for SPI to set finished flag */
     while ((SPSR & _BV(SPIF)) == 0)
         ;
 
-	/* Read from SPDR to clear SPIF from SPSR */
+    /* Read from SPDR to clear SPIF from SPSR */
     return SPDR;
 }
 
@@ -95,28 +96,37 @@ int main(void)
     DDRB |= _BV(LED_GREEN_PIN) | _BV(SCK_PIN) | _BV(PB3) | _BV(CS_PIN);
     DDRD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
 
-    PORTB |= _BV(CS_PIN); // chip select off
+    PORTB |= _BV(CS_PIN);     // chip select off
+    PORTB |= _BV(SWITCH_PIN); // set pull-up resistor
 
     SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR1);
 
-	/* No 7-segment decoding active */
+    /* No 7-segment decoding active */
     same_cmd_to_all(CMD_DECODE_MODE, 0);
 
-	/* Intensity level from 0..15 */
+    /* Intensity level from 0..15 */
     same_cmd_to_all(CMD_INTENSITY, 10);
 
-	/* Enable all eight rows */
+    /* Enable all eight rows */
     same_cmd_to_all(CMD_SCAN_LIMIT, 7);
 
-	/* Normal operation */
+    /* Normal operation */
     same_cmd_to_all(CMD_SHUTDOWN, 1);
 
-	/* No display test. */
+    /* No display test. */
     same_cmd_to_all(CMD_DISPLAY_TEST, 0);
 
     while (true)
     {
-        PORTB |= _BV(LED_GREEN_PIN);
+        if (switch_pressed())
+        {
+            PORTB |= _BV(LED_GREEN_PIN);
+        }
+        else
+        {
+            PORTB &= ~_BV(LED_GREEN_PIN);
+        }
+
         PORTD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
         clear_display();
         set_pixel(0, 0);
@@ -124,7 +134,6 @@ int main(void)
         update_display();
         _delay_ms(500);
 
-        PORTB &= ~_BV(LED_GREEN_PIN);
         PORTD &= ~(_BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN));
         clear_display();
         set_pixel(0, 15);
