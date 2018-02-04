@@ -57,4 +57,5 @@ void game_tick(void)
 /* Called when a debounced button is detected as pressed */
 void game_button_pressed(void)
 {
+    PORTB ^= _BV(LED_GREEN_PIN);
 }

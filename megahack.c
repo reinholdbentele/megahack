@@ -96,7 +96,7 @@ void update_display(void)
 
 void display_set_column(uint8_t x, uint16_t column)
 {
-    for(uint8_t y = 0; y < 16; y++)
+    for (uint8_t y = 0; y < 16; y++)
     {
         display_set_pixel(x, y, column & _BV(y));
     }
@@ -151,21 +151,40 @@ int main(void)
     configure_game_irq();
     sei();
 
+    uint8_t debounce_counter = 0;
+    bool debounce_armed = true;
+    const uint8_t debounce_threshold = 50;
+
     while (true)
     {
         if (switch_pressed())
         {
-            PORTB |= _BV(LED_GREEN_PIN);
+            if (debounce_counter < debounce_threshold)
+            {
+                debounce_counter++;
+            }
         }
         else
         {
-            PORTB &= ~_BV(LED_GREEN_PIN);
+            if (debounce_counter > 0)
+            {
+                debounce_counter--;
+            }
+            else
+            {
+                debounce_armed = true;
+            }
         }
 
-        PORTD |= _BV(LED_RED_PIN);
-        _delay_ms(500);
+        if (debounce_counter == debounce_threshold)
+        {
+            if (debounce_armed)
+            {
+                game_button_pressed();
+                debounce_armed = false;
+            }
+        }
 
-        PORTD &= ~(_BV(LED_RED_PIN));
-        _delay_ms(500);
+        _delay_ms(1);
     }
 }
