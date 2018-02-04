@@ -1,3 +1,5 @@
+![Travis CI build status](https://travis-ci.org/reinholdbentele/megahack.svg?branch=master "Travis CI build status")
+
 # MegaHack
 
 ## Hardware
