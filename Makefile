@@ -1,8 +1,8 @@
 .PHONY: all clean program
 
 
-CFLAGS := -mmcu=atmega168 -Os -Wall -Wextra -std=c11 -DF_CPU=8000000UL
-OBJS := megahack.o
+CFLAGS := -mmcu=atmega168 -Os -Wall -Wextra -Wstrict-prototypes -std=c11 -DF_CPU=8000000UL
+OBJS := megahack.o game.o
 
 all: megahack
 

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include "game.h"
 
 #define CMD_DECODE_MODE 9
 #define CMD_INTENSITY 10
