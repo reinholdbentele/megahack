@@ -12,6 +12,7 @@
   - Green LED: PB0
   - Yellow LED: PD7
   - Red LED: PD6
+  - Input switch: PB0
 
 ## Software
   - [AVR Crosspack for macOS](https://www.obdev.at/products/crosspack/download.html)

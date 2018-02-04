@@ -15,6 +15,7 @@
 #define LED_RED_PIN PD6
 #define SCK_PIN PB5
 #define MOSI_PIN PB3
+#define SWITCH_PIN PB1
 
 static uint8_t display_data[8][8];
 
