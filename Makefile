@@ -2,20 +2,20 @@
 
 
 CFLAGS := -mmcu=atmega168 -Os -Wall -Wextra -std=c11 -DF_CPU=8000000UL
-OBJS := helloworld.o
+OBJS := megahack.o
 
-all: helloworld
+all: megahack
 
 clean:
-	rm -f helloworld $(OBJS)
+	rm -f megahack $(OBJS)
 
 program:
-	avrdude -cusbasp -pm168 -B2 -U flash:w:helloworld.bin:r
+	avrdude -cusbasp -pm168 -B2 -U flash:w:megahack.bin:r
 
-helloworld: $(OBJS)
+megahack: $(OBJS)
 	avr-gcc $(CFLAGS) -o $@ $(OBJS)
 
-helloworld.bin: helloworld
+megahack.bin: megahack
 	avr-objcopy -O binary -j .text $< $@
 
 .c.o:	
