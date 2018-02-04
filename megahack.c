@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "game.h"
+#include "megahack.h"
 
 #define CMD_DECODE_MODE 9
 #define CMD_INTENSITY 10
@@ -11,13 +12,6 @@
 #define CMD_SHUTDOWN 12
 #define CMD_DISPLAY_TEST 15
 #define CMD_DIGIT0 1
-#define CS_PIN PB2
-#define LED_GREEN_PIN PB0
-#define LED_YELLOW_PIN PD7
-#define LED_RED_PIN PD6
-#define SCK_PIN PB5
-#define MOSI_PIN PB3
-#define SWITCH_PIN PB1
 #define switch_pressed() ((PINB & _BV(SWITCH_PIN)) == 0)
 
 static uint8_t display_data[8][8];
@@ -70,7 +64,7 @@ void clear_display(void)
     memset(display_data, 0, sizeof(display_data));
 }
 
-void set_pixel(uint8_t x, uint8_t y)
+void display_set_pixel(uint8_t x, uint8_t y, bool on)
 {
     if (y >= 8)
     {
@@ -82,7 +76,14 @@ void set_pixel(uint8_t x, uint8_t y)
     uint8_t m = x / 8;
     uint8_t n = 1 << (7 - (x % 8));
 
-    display_data[l][m] |= n;
+    if (on)
+    {
+        display_data[l][m] |= n;
+    }
+    else
+    {
+        display_data[l][m] &= ~n;
+    }
 }
 
 void update_display(void)
@@ -90,6 +91,14 @@ void update_display(void)
     for (uint8_t i = 0; i < 8; i++)
     {
         cmd_to_all_with_data(CMD_DIGIT0 + i, display_data[i]);
+    }
+}
+
+void display_set_column(uint8_t x, uint16_t column)
+{
+    for(uint8_t y = 0; y < 16; y++)
+    {
+        display_set_pixel(x, y, column & _BV(y));
     }
 }
 
@@ -131,7 +140,7 @@ static void configure_game_irq(void)
 
 ISR(TIMER0_OVF_vect)
 {
-    PORTD ^= _BV(LED_YELLOW_PIN);
+    game_tick();
 }
 
 int main(void)
@@ -154,17 +163,9 @@ int main(void)
         }
 
         PORTD |= _BV(LED_RED_PIN);
-        clear_display();
-        set_pixel(0, 0);
-        set_pixel(31, 0);
-        update_display();
         _delay_ms(500);
 
         PORTD &= ~(_BV(LED_RED_PIN));
-        clear_display();
-        set_pixel(0, 15);
-        set_pixel(31, 15);
-        update_display();
         _delay_ms(500);
     }
 }
