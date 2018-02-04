@@ -92,14 +92,8 @@ void update_display(void)
     }
 }
 
-int main(void)
+static void initialize_displays(void)
 {
-    DDRB |= _BV(LED_GREEN_PIN) | _BV(SCK_PIN) | _BV(PB3) | _BV(CS_PIN);
-    DDRD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
-
-    PORTB |= _BV(CS_PIN);     // chip select off
-    PORTB |= _BV(SWITCH_PIN); // set pull-up resistor
-
     SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR1);
 
     /* No 7-segment decoding active */
@@ -116,6 +110,27 @@ int main(void)
 
     /* No display test. */
     same_cmd_to_all(CMD_DISPLAY_TEST, 0);
+}
+
+static void initialize_ports(void)
+{
+    DDRB |= _BV(LED_GREEN_PIN) | _BV(SCK_PIN) | _BV(PB3) | _BV(CS_PIN);
+    DDRD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
+
+    PORTB |= _BV(CS_PIN);     // chip select off
+    PORTB |= _BV(SWITCH_PIN); // set pull-up resistor
+}
+
+static void configure_game_irq(void)
+{
+}
+
+int main(void)
+{
+    initialize_ports();
+    initialize_displays();
+
+    configure_game_irq();
 
     while (true)
     {
