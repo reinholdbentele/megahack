@@ -16,7 +16,7 @@ megahack: $(OBJS)
 	avr-gcc $(CFLAGS) -o $@ $(OBJS)
 
 megahack.bin: megahack
-	avr-objcopy -O binary -j .text $< $@
+	avr-objcopy -O binary -j .text -j .data $< $@
 
 .c.o:	
 	avr-gcc $(CFLAGS) -c -o $@ $<
