@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include "game.h"
 
@@ -123,6 +124,14 @@ static void initialize_ports(void)
 
 static void configure_game_irq(void)
 {
+    /* 8 Mhz / 1024 = 7,8 kHz timer clock */
+    TCCR0B = _BV(CS02) | _BV(CS00);
+    TIMSK0 = _BV(TOIE0);
+}
+
+ISR(TIMER0_OVF_vect)
+{
+    PORTD ^= _BV(LED_YELLOW_PIN);
 }
 
 int main(void)
@@ -131,6 +140,7 @@ int main(void)
     initialize_displays();
 
     configure_game_irq();
+    sei();
 
     while (true)
     {
@@ -143,14 +153,14 @@ int main(void)
             PORTB &= ~_BV(LED_GREEN_PIN);
         }
 
-        PORTD |= _BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN);
+        PORTD |= _BV(LED_RED_PIN);
         clear_display();
         set_pixel(0, 0);
         set_pixel(31, 0);
         update_display();
         _delay_ms(500);
 
-        PORTD &= ~(_BV(LED_YELLOW_PIN) | _BV(LED_RED_PIN));
+        PORTD &= ~(_BV(LED_RED_PIN));
         clear_display();
         set_pixel(0, 15);
         set_pixel(31, 15);
