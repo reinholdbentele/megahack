@@ -104,7 +104,7 @@ void display_set_column(uint8_t x, uint16_t column)
 
 static void initialize_displays(void)
 {
-    SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR1);
+    SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);
 
     /* No 7-segment decoding active */
     same_cmd_to_all(CMD_DECODE_MODE, 0);
@@ -133,8 +133,8 @@ static void initialize_ports(void)
 
 static void configure_game_irq(void)
 {
-    /* 8 Mhz / 1024 = 7,8 kHz timer clock */
-    TCCR0B = _BV(CS02) | _BV(CS00);
+    /* 8 Mhz / 256 = full overflow 8,192ms */
+    TCCR0B = _BV(CS02);
     TIMSK0 = _BV(TOIE0);
 }
 
